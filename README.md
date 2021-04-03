@@ -67,4 +67,18 @@
 >  > List<MemberDTO> result7 = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class) 
 >  > .getResultList(); 
 >  > ```
-     
+
+# 페이징 API
+> * `setFirstResult`
+> 
+>  시작 번호
+> * `setMaxResults`
+> 
+>  종료 번호
+> 
+>  > ```java
+>  > List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
+>  > .setFirstResult(0)  
+>  > .setMaxResults(10)
+>  > .getResultList(); 
+>  > ```
