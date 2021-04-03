@@ -82,3 +82,38 @@
 >  > .setMaxResults(10)
 >  > .getResultList(); 
 >  > ```
+
+# join
+> **1:N 관계인지 확인 후 1:N의 fetch를 LAZY 확인 필수!**
+> * `inner join`
+>  > ```java
+>  > String sql = "select m from Member m inner join m.team t"; 
+>  > List<Member> result = em.createQuery(sql, Member.class)   
+>  > .getResultList(); 
+>  > ```
+> * `outer join`
+>  > ```java
+>  > String sql = "select m from Member m left join m.team t"; 
+>  > List<Member> result = em.createQuery(sql, Member.class)   
+>  > .getResultList(); 
+>  > ```
+> * `theta join`
+>  > ```java
+>  > String sql = "select m from Member m, Team t where m.username = t.name";
+>  > List<Member> result = em.createQuery(sql, Member.class)   
+>  > .getResultList();
+>  > ```
+> * `ON 절 추가하여 join 필터링`
+> 
+>   hibernate 5.1 추가
+>  > ```java
+>  > //일반 join
+>  > String sql = "select m from Member m left join m.team t on t.name = 'teamA'";
+>  > List<Member> result = em.createQuery(sql, Member.class)   
+>  > .getResultList();
+>  > 
+>  > //연관관계가 없는 join (=theta join)
+>  > String sql = "select m from Member m left join Team t on m.username = t.name";
+>  > List<Member> result = em.createQuery(sql, Member.class)   
+>  > .getResultList();
+>  > ```
