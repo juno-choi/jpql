@@ -2,7 +2,7 @@
 
 
 # jqpl  기본문법
-> * `getResultList() 와 getSingleResult`
+>  * `getResultList() 와 getSingleResult`
 > 
 >  getResultList()
 >
