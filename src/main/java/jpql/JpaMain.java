@@ -19,7 +19,7 @@ public class JpaMain {
             em.persist(team);
 
             Member member= new Member();
-            member.setUsername("member1");
+            member.setUsername("관리자");
             member.setAge(10);
             member.setType(MemberType.ADMIN);
 
@@ -29,13 +29,13 @@ public class JpaMain {
 
             em.flush();
             em.clear();
-            //String sql = "select m.username, 'HEELO', true from Member m " +
-            //        "where m.type = jqpl.MemberType.ADMIN";
-            String sql = "select m.username, 'HEELO', true from Member m " +
-                            "where m.type = :userType";
-            List<Object[]> result = em.createQuery(sql)
-                    .setParameter("userType", MemberType.ADMIN)
-                    .getResultList();
+            
+            String query =
+                    "select nullif(m.username, '관리자') from Member m ";
+            List<String> result = em.createQuery(query, String.class).getResultList();
+            for(String s : result){
+                System.out.println("s = "+s);
+            }
 
             tx.commit();
         }catch(Exception e){
