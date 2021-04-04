@@ -147,3 +147,26 @@
 >  > select m from Member m where m.age IN (1, 2, 3, 4, 10)
 >  > ```
 
+# jpql 타입 표현
+
+> * `문자`
+>  > 'hello', 'she"s'
+> * `숫자`
+>  > 10L(Long), 10D(Double), 10F(Flat)
+> * `boolean`
+>  > TRUE, FALSE (대,소 상관없음)
+> * `ENUM`
+>  > jpql.MemberType.Admin (패키지명 포함)
+>  >
+>  > 단 parameter로 받을땐 객체로 받아오면 됨!
+>  > ```java
+>  > String sql = "select m.username, 'HEELO', true from Member m " +
+>  > "where m.type = :userType";
+>  > List<Object[]> result = em.createQuery(sql)
+>  > .setParameter("userType", MemberType.ADMIN)
+>  > .getResultList();
+>  > ```
+> * `Entity type`
+>  > TYPE(m) = Member (상속 관계일때 사용)
+> * `기타`
+>  > =, >, <, <>, <=, >= , AND, OR, NOT, BETWEEN, LIKE, ISNULL, EXISTS, IN 다 지원
