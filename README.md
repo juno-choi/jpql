@@ -1,4 +1,5 @@
 # jpql
+   출처 : https://www.inflearn.com/course/ORM-JPA-Basic/lecture/21723
 
 
 # jqpl  기본문법
@@ -105,7 +106,7 @@
 >  > ```
 > * `ON 절 추가하여 join 필터링`
 > 
->   hibernate 5.1 추가
+>  hibernate 5.1 추가
 >  > ```java
 >  > //일반 join
 >  > String sql = "select m from Member m left join m.team t on t.name = 'teamA'";
@@ -117,3 +118,32 @@
 >  > List<Member> result = em.createQuery(sql, Member.class)   
 >  > .getResultList();
 >  > ```
+
+# sub query
+> * `sub query 예시`
+> 
+>  jpa는 where과 having 절에서만 sub query를 지원함
+> 
+>  hibernate에서 select 절 sub query를 지원
+>  > ```sql
+>  > # 기존의 sql문처럼 대상을 객체로하여 sub query를 만들어주면 됨
+>  > select m from Member m where m.age > (select avg(m2.age) from Member m2) 
+>  > ```
+> * `sub query function`
+>  1. [NOT] EXISTS : sub query에 결과가 존재하면 참
+>  > ```sql
+>  > select m from Member m where exists (select t from m.team t where t.name = ‘팀A')
+>  > ```
+>  2. ALL : 모두 만족하면 참
+>  > ```sql
+>  > select o from Order o where o.orderAmount > ALL (select p.stockAmount from Product p)
+>  > ```
+>  3. ANY, SOME : 하나라도 만족하면 참
+>  > ```sql
+>  > select m from Member m where m.team = ANY (select t from Team t)
+>  > ```
+>  4. [NOY] IN : 결과 중 하나라도 같은 것이 있으면 참
+>  > ```sql
+>  > select m from Member m where m.age IN (1, 2, 3, 4, 10)
+>  > ```
+
