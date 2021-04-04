@@ -4,18 +4,17 @@
 
 # jqpl  기본문법
 
-* `getResultList()`
-
+`getResultList()`
   결과가 하나 이상일때, 없을경우 빈값을 반환
  
-* `getSingleResult()`
+`getSingleResult()`
 결과가 하나일때
-       
-  없을경우 NoResultException
 
-  없을경우 NonUniqueResultException
+  결과가 없을경우 NoResultException
 
-* `파라미터 바인딩 - 이름 기준, 위치 기준`
+  결과가 둘 이상일 경우 NonUniqueResultException
+
+* 파라미터 바인딩 - 이름 기준, 위치 기준
 
   이름 기준
 
@@ -34,7 +33,7 @@
   ```
 
 # 프로젝션(select)
-* `엔티티 타입 프로젝션`
+* 엔티티 타입 프로젝션
 ```java
 List<Member> result = em.createQuery("select m from Member m", Member.class)
 .getResultList();
@@ -46,12 +45,12 @@ List<Team> result2 = em.createQuery("select m.team from Member m", Team.class)
 List<Team> result3 = em.createQuery("select t from Member m join m.team t", Team.class)
 .getResultList();
 ```
-* `임베디드 타입 프로젝션`
+* 임베디드 타입 프로젝션
 ```java
 List<Address> result4 = em.createQuery("select o.address from Order o", Address.class)
 .getResultList();
 ```
-* `스칼라 타입 프로젝션`
+* 스칼라 타입 프로젝션
 ```java
 //object[]로 반환
 List result5 = em.createQuery("select m.username, m.age from Member m")
@@ -69,11 +68,10 @@ List<MemberDTO> result7 = em.createQuery("select new jpql.MemberDTO(m.username, 
 ```
 
 # 페이징 API
-* `setFirstResult`
-
+`setFirstResult`
   시작 번호
-* `setMaxResults`
- 
+
+`setMaxResults`
   종료 번호
  
 ```java
@@ -85,25 +83,25 @@ List<Member> result = em.createQuery("select m from Member m order by m.age desc
 
 # join
 **1:N 관계인지 확인 후 1:N의 fetch를 LAZY 확인 필수!**
-* `inner join`
+* inner join
 ```java
 String sql = "select m from Member m inner join m.team t"; 
 List<Member> result = em.createQuery(sql, Member.class)   
 .getResultList(); 
 ```
-* `outer join`
+* outer join
 ```java
 String sql = "select m from Member m left join m.team t"; 
 List<Member> result = em.createQuery(sql, Member.class)   
 .getResultList(); 
 ```
-* `theta join`
+* theta join
 ```java
 String sql = "select m from Member m, Team t where m.username = t.name";
 List<Member> result = em.createQuery(sql, Member.class)   
 .getResultList();
 ```
-* `ON 절 추가하여 join 필터링`
+* ON 절 추가하여 join 필터링
 
   hibernate 5.1 추가
 ```java
@@ -128,36 +126,36 @@ List<Member> result = em.createQuery(sql, Member.class)
 # 기존의 sql문처럼 대상을 객체로하여 sub query를 만들어주면 됨
 select m from Member m where m.age > (select avg(m2.age) from Member m2) 
 ```
-* `sub query function`
-1. [NOT] EXISTS : sub query에 결과가 존재하면 참
-```sql
-select m from Member m where exists (select t from m.team t where t.name = ‘팀A')
-```
-2. ALL : 모두 만족하면 참
-```sql
-select o from Order o where o.orderAmount > ALL (select p.stockAmount from Product p)
-```
-3. ANY, SOME : 하나라도 만족하면 참
-```sql
-select m from Member m where m.team = ANY (select t from Team t)
-```
-4. [NOY] IN : 결과 중 하나라도 같은 것이 있으면 참
-```sql
-select m from Member m where m.age IN (1, 2, 3, 4, 10)
-```
+* sub query function
+  1. [NOT] EXISTS : sub query에 결과가 존재하면 참
+  ```sql
+  select m from Member m where exists (select t from m.team t where t.name = ‘팀A')
+  ```
+  2. ALL : 모두 만족하면 참
+  ```sql
+  select o from Order o where o.orderAmount > ALL (select p.stockAmount from Product p)
+  ```
+  3. ANY, SOME : 하나라도 만족하면 참
+  ```sql
+  select m from Member m where m.team = ANY (select t from Team t)
+  ```
+  4. [NOY] IN : 결과 중 하나라도 같은 것이 있으면 참
+  ```sql
+  select m from Member m where m.age IN (1, 2, 3, 4, 10)
+  ```
 
 # jpql 타입 표현
 
-* `문자`
+`문자`
   'hello', 'she"s'
-* `숫자`
-  10L(Long), 10D(Double), 10F(Flat)
-* `boolean`
-  TRUE, FALSE (대,소 상관없음)
-* `ENUM`
-  jpql.MemberType.Admin (패키지명 포함)
 
-  단 parameter로 받을땐 객체로 받아오면 됨!
+`숫자`
+  10L(Long), 10D(Double), 10F(Flat)
+
+`boolean`
+  TRUE, FALSE (대,소 상관없음)
+
+`ENUM` jpql.MemberType.Admin (패키지명 포함), 단 parameter로 받을땐 객체로 받아오면 됨!
 ```java
 String sql = "select m.username, 'HEELO', true from Member m " +
 "where m.type = :userType";
@@ -165,10 +163,9 @@ List<Object[]> result = em.createQuery(sql)
 .setParameter("userType", MemberType.ADMIN)
 .getResultList();
 ```
-* `Entity type`
-  TYPE(m) = Member (상속 관계일때 사용)
-* `기타`
-  =, >, <, <>, <=, >= , AND, OR, NOT, BETWEEN, LIKE, ISNULL, EXISTS, IN 다 지원
+`Entity type` TYPE(m) = Member (상속 관계일때 사용)
+
+`기타` =, >, <, <>, <=, >= , AND, OR, NOT, BETWEEN, LIKE, ISNULL, EXISTS, IN 다 지원
   
 # 조건식
 
@@ -202,4 +199,21 @@ String query =
 ```java
 String query =
 "select nullif(m.username, '관리자') from Member m ";
+```
+
+#jpql 함수
+* jqpl 기본함수
+  
+  기본 제공되는 sql 함수들 
+  
+  concat, substring, trim, lower, upper, length, locate, abs, sqrt, mod
+
+  jpa 제공 
+  
+  size, index  
+* 사용자 정의 함수
+
+  사용자가 필요에 의해 등록하여 사용하는 함수
+```sql
+select function('함수명', i.name) from Item i
 ```
