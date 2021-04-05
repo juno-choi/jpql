@@ -117,7 +117,7 @@ List<Member> result = em.createQuery(sql, Member.class)
 ```
 
 # sub query
-* `sub query 예시`
+* sub query 예시
  
   jpa는 where과 having 절에서만 sub query를 지원함
 
@@ -191,17 +191,16 @@ String query =
 * CASE 조건식
   
 `COALESCE` 하나씩 조회해서 NULL이 아니면 반환
-```java
-String query =
-        "select coalesce(m.username, '이름 없는 회원') from Member m ";
+```sql
+select coalesce(m.username, '이름 없는 회원') from Member m
 ```
 `NULLIF` 두 값이 같으면 null 반환, 다르면 첫번째 값 반환
-```java
-String query =
-"select nullif(m.username, '관리자') from Member m ";
+```sql
+select nullif(m.username, '관리자') from Member m
 ```
 
-#jpql 함수
+# jpql 함수
+
 * jqpl 기본함수
   
   기본 제공되는 sql 함수들 
@@ -216,4 +215,37 @@ String query =
   사용자가 필요에 의해 등록하여 사용하는 함수
 ```sql
 select function('함수명', i.name) from Item i
+```
+
+# 경로 표현식
+
+<h6>묵시적 조인은 최대한 사용하지 않는 편이 좋다</h6>
+<h6>명시적 조인으로 다른 개발자가 봐도 이해할 수 있는 코드를 만들어 놓는 편이 좋기 때문</h6>
+
+`상태필드` 경로 탐색의 끝
+
+```sql
+select m.username from Member m
+```
+
+`단일 값 연관 경로` 묵시적 내부 조인(inner join) 발생, 탐색 O
+
+  Member의 Team은 또 다른 Entity
+
+```sql
+select m.team.name from Member m
+```
+
+`컬렉션 값 연관 경로` 묵시적 내부 조인 발생, 탐색 X
+
+Team의 members는 컬렉션(List)의 값을 가지는 column
+
+```sql
+select t.members from Team t
+```
+
+이 경우 From절에서 명시적 join으로 값을 가져올 수 있다.
+
+```sql
+select m.username from Team t join t.members m
 ```
