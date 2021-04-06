@@ -282,3 +282,25 @@ select distinct m from Member m join fetch m.team
 * 해결 방법
    1. entity별로 select 혹은 fetch join을 나누어 적용하여 정보를 가져온 뒤 DTO로 반환한다.
    2. mybatis나 jdbc를 사용하여 query문을 만들어서 정보를 가져온다.
+  
+`entity 를 query로 직접 사용할 경우` 해당 객체의 키 값을 사용한다.
+
+# Named query - 정적쿼리만 가능
+
+* application 로딩 시점에 초기화 후 계속해서 재사용 가능
+  
+* application 로딩 시점에 query 검증
+
+  사용자가 직접 사용하기 전에 프로그램 자체에서 검열이 되므로 굉장한 이점
+
+# 벌크 연산
+
+* query 한번으로 테이블의 정보를 한번에 변경
+
+* executeUpdate()의 결과는 영향받은 엔티티 수를 int로 반환
+
+```java
+int i = em.createQuery("update Member m set m.age = 20").executeUpdate();
+```
+
+* 벌크 연산은 영속성 컨텍스트를 무시하고 데이터베이스에 직접 쿼리를 날리기 때문에 벌크 연산을 먼저 실행하거나 벌크 연산 수행 후 영속성 컨텍스트를 초기화한다.

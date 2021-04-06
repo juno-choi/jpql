@@ -40,13 +40,11 @@ public class JpaMain {
 
             em.flush();
             em.clear();
-            
-            String query =
-                    "select m from Member m join fetch  m.team";
-            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
-            for(Member member : resultList){
-                System.out.println("member = "+ member.getUsername() + ", "+ member.getTeam().getName());
-            }
+
+            int i = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
+            System.out.println(i);
+
             tx.commit();
         }catch(Exception e){
             tx.rollback();
