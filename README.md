@@ -249,3 +249,36 @@ select t.members from Team t
 ```sql
 select m.username from Team t join t.members m
 ```
+
+# fetch join
+<h6>엄청 중요함</h6>
+```sql
+select m from Member m join fetch m.team
+```
+
+위 같은 jqpl문을 작성시 sql문으로는 아래와 같이 실행됨
+
+```sql
+select m.*, t.* from member m inner join team t on m.team_id = t.id
+```
+
+fetch join 사용시 데이터가 1대N일 경우 N으로 늘어나게 되는데 distinct를 사용하여 중복을 제거할 수 있다.
+```sql
+select distinct m from Member m join fetch m.team
+```
+
+* fetch join의 한계
+  1. fetch join 대상에는 별칭을 줄 수 없다. 
+   
+     hibernate는 가능 하지만 가급적 사용하지 않는 편이 좋다.
+   
+     객체 그래프를 탐색하는 JPA 특성과 맞지 않음
+
+  2. 둘 이상의 컬렉션은 페치 조인 할 수 없다.
+
+  3. 컬렉션을 페치 조인하면 페이징을 사용할 수 없다.
+  
+
+* 해결 방법
+   1. entity별로 select 혹은 fetch join을 나누어 적용하여 정보를 가져온 뒤 DTO로 반환한다.
+   2. mybatis나 jdbc를 사용하여 query문을 만들어서 정보를 가져온다.

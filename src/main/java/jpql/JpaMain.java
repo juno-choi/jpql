@@ -14,29 +14,39 @@ public class JpaMain {
         tx.begin();
         //code
         try{
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
+            Team teamA = new Team();
+            teamA.setName("TeamA");
+            em.persist(teamA);
 
-            Member member= new Member();
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.setType(MemberType.ADMIN);
+            Team teamB = new Team();
+            teamB.setName("TeamB");
+            em.persist(teamB);
 
-            member.setTeam(team);
+            Member member1= new Member();
+            member1.setUsername("회원1");
+            member1.setTeam(teamA);
+            em.persist(member1);
 
-            em.persist(member);
+            Member member2= new Member();
+            member2.setUsername("회원2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            Member member3= new Member();
+            member3.setUsername("회원3");
+            member3.setTeam(teamB);
+            em.persist(member3);
+
 
             em.flush();
             em.clear();
             
             String query =
-                    "select nullif(m.username, '관리자') from Member m ";
-            List<String> result = em.createQuery(query, String.class).getResultList();
-            for(String s : result){
-                System.out.println("s = "+s);
+                    "select m from Member m join fetch  m.team";
+            List<Member> resultList = em.createQuery(query, Member.class).getResultList();
+            for(Member member : resultList){
+                System.out.println("member = "+ member.getUsername() + ", "+ member.getTeam().getName());
             }
-
             tx.commit();
         }catch(Exception e){
             tx.rollback();
